@@ -22,6 +22,9 @@ Thermostat.prototype = {
   isPowerSavingModeOn: function() {
     return this._powerSavingMode;
   },
+    switchPowerSavingModeOff: function() {
+    this._powerSavingMode = false;
+  },
   _isMinimumTemperature: function() {
     return this._temperature == this._MINIMUM_TEMPERATURE;
   }
