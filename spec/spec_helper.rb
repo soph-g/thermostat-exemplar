@@ -16,12 +16,17 @@
 require 'capybara/rspec'
 require_relative '../app'
 
+
+Capybara.app = Thermostat
+Capybara.server = :puma, { Silent: true }
+Capybara.default_driver = :selenium
+
 RSpec.configure do |config|
 
-  Capybara.app = Thermostat
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
+
   config.expect_with :rspec do |expectations|
     # This option will default to `true` in RSpec 4. It makes the `description`
     # and `failure_message` of custom matchers include text for helper methods
