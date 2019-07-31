@@ -19,4 +19,11 @@ describe('Thermostat', function() {
       expect(thermostat.getCurrentTemperature()).toEqual(21);
     });
   });
+
+  describe('#up', function() {
+    it('decrements the temperature', function() {
+      thermostat.down();
+      expect(thermostat.getCurrentTemperature()).toEqual(19);
+    });
+  });
 });
