@@ -5,6 +5,17 @@
     <title>Thermostat Exemplar</title>
   </head>
   <body>
-    <h1>Hello, World!</h1>
+    <h1 id="temperature"></h1>
+    <div>
+      <button id="temperature-up">+</button>
+      <button id="temperature-down">-</button>
+      <button id="temperature-reset">reset</button>
+    </div>
+    <div>
+      power saving mode is <span id="power-saving-status">on</span>
+      <button id="powersaving-on">PSM on</button>
+      <button id="powersaving-off">PSM off</button>
+    </div>
+    <script type="text/javascript" src="src/Thermostat.js"></script>
   </body>
 </html>
