@@ -11,5 +11,5 @@ open index.html
 ## Testing
 
 ```
-open SpecRunner.html
+open public/javascript/SpecRunner.html
 ```
