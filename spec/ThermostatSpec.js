@@ -18,6 +18,14 @@ describe('Thermostat', function() {
       thermostat.up();
       expect(thermostat.getCurrentTemperature()).toEqual(21);
     });
+    describe('power saving mode is on', function() {
+      it('has an upper limit of 25 degrees', function() {
+        for (var i = 0; i < 8; i++) {
+          thermostat.up();
+        }
+        expect(thermostat.getCurrentTemperature()).toEqual(25); 
+      });
+    });
   });
 
   describe('#down', function() {
