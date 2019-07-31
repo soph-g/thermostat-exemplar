@@ -71,4 +71,14 @@ describe('Thermostat', function() {
       expect(thermostat.isPowerSavingModeOn()).toBe(true);
     });
   });
+
+  describe('reset temperature', function() {
+    it('resets the temperature to default', function() {
+      thermostat.up();
+      thermostat.up();
+      thermostat.up();
+      thermostat.resetTemperature();
+      expect(thermostat.getCurrentTemperature()).toEqual(20);
+    });
+  });
 });
