@@ -23,7 +23,16 @@ describe('Thermostat', function() {
         for (var i = 0; i < 8; i++) {
           thermostat.up();
         }
-        expect(thermostat.getCurrentTemperature()).toEqual(25); 
+        expect(thermostat.getCurrentTemperature()).toEqual(25);
+      });
+    });
+    describe('power saving mode is off', function() {
+      it('has an upper limit of 25 degrees', function() {
+        thermostat.switchPowerSavingModeOff();
+        for (var i = 0; i < 15; i++) {
+          thermostat.up();
+        }
+        expect(thermostat.getCurrentTemperature()).toEqual(32);
       });
     });
   });
@@ -60,6 +69,6 @@ describe('Thermostat', function() {
       thermostat.switchPowerSavingModeOff();
       thermostat.switchPowerSavingModeOn();
       expect(thermostat.isPowerSavingModeOn()).toBe(true);
-    })
+    });
   });
 });
