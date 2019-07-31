@@ -27,7 +27,7 @@ describe('Thermostat', function() {
       });
     });
     describe('power saving mode is off', function() {
-      it('has an upper limit of 25 degrees', function() {
+      it('has an upper limit of 32 degrees', function() {
         thermostat.switchPowerSavingModeOff();
         for (var i = 0; i < 15; i++) {
           thermostat.up();
@@ -70,6 +70,15 @@ describe('Thermostat', function() {
       thermostat.switchPowerSavingModeOn();
       expect(thermostat.isPowerSavingModeOn()).toBe(true);
     });
+
+    it('resets the temperature to the PSM On Max', function() {
+      thermostat.switchPowerSavingModeOff();
+      for (var i = 0; i < 10; i++) {
+        thermostat.up();
+      }
+      thermostat.switchPowerSavingModeOn();
+      expect(thermostat.getCurrentTemperature()).toEqual(25)
+    })
   });
 
   describe('reset temperature', function() {
