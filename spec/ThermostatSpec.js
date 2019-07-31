@@ -31,6 +31,12 @@ describe('Thermostat', function() {
         thermostat.down();
       }
       expect(thermostat.getCurrentTemperature()).toEqual(10);
-    })
+    });
+  });
+
+  describe('#isPowerSavingModeOn', function() {
+    it('is on by default', function() {
+      expect(thermostat.isPowerSavingModeOn()).toBe(true);
+    });
   });
 });
