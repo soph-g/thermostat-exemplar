@@ -20,7 +20,7 @@ describe('Thermostat', function() {
     });
   });
 
-  describe('#up', function() {
+  describe('#down', function() {
     it('decrements the temperature', function() {
       thermostat.down();
       expect(thermostat.getCurrentTemperature()).toEqual(19);
