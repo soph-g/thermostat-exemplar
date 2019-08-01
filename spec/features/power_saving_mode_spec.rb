@@ -1,4 +1,4 @@
-feature 'power saving mode' do
+xfeature 'power saving mode' do
   before do
     visit('/')
   end

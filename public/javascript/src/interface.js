@@ -33,7 +33,10 @@ $(document).ready(function() {
   })
 
   function updateTemperature() {
-    $('#temperature').text(thermostat.getCurrentTemperature());
+    $.get('/temperature', function(res) {
+      var data = JSON.parse(res)
+      $('#temperature').text(data.temperature);
+    });
     $('#temperature').attr('class', thermostat.energyUsage());
   }
 });
