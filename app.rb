@@ -9,8 +9,17 @@ class ThermostatApp < Sinatra::Base
   end
 
   get "/temperature" do
-    thermostat = Thermostat.new
-    { temperature: thermostat.temperature }.to_json
+    thermostat = Thermostat.instance
+    {
+      temperature: thermostat.temperature,
+      status: 200 
+    }.to_json
+  end
+
+  post "/temperature" do
+    thermostat = Thermostat.instance
+    thermostat.up
+    { status: 200 }.to_json
   end
 
   run! if app_file == $0

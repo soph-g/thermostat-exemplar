@@ -6,7 +6,7 @@ feature 'viewing the temperature' do
     expect(page.find('#temperature')).to have_content '20'
   end
 
-  xit 'can be increased' do
+  it 'can be increased' do
     page.find('#temperature-up').click
     expect(page.find('#temperature')).to have_content '21'
     expect(page).not_to have_content '20'
