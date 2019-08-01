@@ -5,10 +5,19 @@ An exemplar for the Thermostat Single Page Web App project.
 ## How to use
 
 ```
-open index.html
+ruby app.rb
+
 ```
 
 ## Testing
+
+To run feature tests:
+
+```
+rspec
+```
+
+To run unit tests:
 
 ```
 open public/javascript/SpecRunner.html
