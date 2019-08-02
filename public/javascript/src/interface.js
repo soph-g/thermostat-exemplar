@@ -15,13 +15,21 @@ $(document).ready(function() {
   });
 
   $('#temperature-down').on('click', function() {
-    thermostat.down();
-    updateTemperature();
+    $.post('/temperature', { method: "down" }, function(res) {
+      var data = JSON.parse(res);
+      if (data.status == 200) {
+        updateTemperature();
+      }
+    });
   });
 
   $('#temperature-reset').on('click', function() {
-    thermostat.resetTemperature();
-    updateTemperature();
+    $.post('/temperature', { method: "reset" }, function(res) {
+      var data = JSON.parse(res);
+      if (data.status == 200) {
+        updateTemperature();
+      }
+    });
   });
 
   $('#power-saving-on').on('click', function() {

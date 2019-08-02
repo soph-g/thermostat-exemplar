@@ -1,12 +1,22 @@
 class Thermostat
   attr_reader :temperature
 
+  DEFAULT_TEMPERATURE = 20
+
   def initialize
-    @temperature = 20
+    @temperature = DEFAULT_TEMPERATURE
   end
 
   def up
     @temperature += 1
+  end
+
+  def down
+    @temperature -= 1
+  end
+
+  def reset
+    @temperature = DEFAULT_TEMPERATURE
   end
 
   def self.instance
