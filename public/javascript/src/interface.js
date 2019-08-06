@@ -1,8 +1,6 @@
 'use strict';
 
 $(document).ready(function() {
-  var thermostat = new Thermostat();
-
   updateTemperature();
 
   $('#temperature-up').on('click', function() {
@@ -33,24 +31,32 @@ $(document).ready(function() {
   });
 
   $('#power-saving-on').on('click', function() {
-    thermostat.switchPowerSavingModeOn();
-    $('#power-saving-status').text('on');
-    updateTemperature();
+    $.post('/power-saving-mode', { method: 'on' }, function(res) {
+      var data = JSON.parse(res)
+      if (data.status === 200) {
+        updateTemperature();
+      }
+    });
   });
 
   $('#power-saving-off').on('click', function() {
-    thermostat.switchPowerSavingModeOff();
-    $('#power-saving-status').text('off');
-    updateTemperature();
+    $.post('/power-saving-mode', function(res) {
+      var data = JSON.parse(res)
+      if (data.status === 200) {
+        updateTemperature();
+      }
+    });
   })
 
   function updateTemperature() {
     $.get('/temperature', function(res) {
       var data = JSON.parse(res)
       if (data.status == 200) {
+        var power_save_mode = data.power_save_mode_on ? 'on' : 'off';
         $('#temperature').text(data.temperature);
+        $('#temperature').attr('class', data.energy_usage + '-usage');
+        $('#power-saving-status').text(power_save_mode);
       }
     });
-    $('#temperature').attr('class', thermostat.energyUsage());
   }
 });

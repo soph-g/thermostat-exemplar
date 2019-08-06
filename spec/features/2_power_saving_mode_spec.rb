@@ -1,6 +1,7 @@
-xfeature 'power saving mode' do
+feature 'power saving mode' do
   before do
     visit('/')
+    page.find('#temperature-reset').click
   end
 
   it 'is on by default' do
@@ -10,6 +11,12 @@ xfeature 'power saving mode' do
   it 'can be switched off' do
     page.find('#power-saving-off').click
     expect(page.find('#power-saving-status')).to have_content 'off'
+  end
+
+  it 'can be switched on' do
+    expect(page.find('#power-saving-status')).to have_content 'off'
+    page.find('#power-saving-on').click
+    expect(page.find('#power-saving-status')).to have_content 'on'
   end
 
   context 'power saving mode is on' do

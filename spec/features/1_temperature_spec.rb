@@ -21,10 +21,16 @@ feature 'viewing the temperature' do
     expect(page).not_to have_content '20'
   end
 
+  it 'has a minimum temperature of 10 degrees' do
+    visit('/')
+    11.times { page.find('#temperature-down').click }
+    expect(page.find('#temperature')).to have_content '10'
+  end
+
   it 'can be reset' do
     visit('/')
     page.find('#temperature-down').click
-    expect(page.find('#temperature')).to have_content '18'
+    expect(page.find('#temperature')).not_to have_content '20'
     page.find('#temperature-reset').click
     expect(page.find('#temperature')).to have_content '20'
   end

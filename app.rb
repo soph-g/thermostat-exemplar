@@ -14,6 +14,8 @@ class ThermostatApp < Sinatra::Base
     thermostat = Thermostat.instance
     {
       temperature: thermostat.temperature,
+      power_save_mode_on: thermostat.in_power_save_mode?,
+      energy_usage: thermostat.energy_usage,
       status: 200
     }.to_json
   end
@@ -27,6 +29,16 @@ class ThermostatApp < Sinatra::Base
       thermostat.down
     when "reset"
       thermostat.reset
+    end
+    { status: 200 }.to_json
+  end
+
+  post "/power-saving-mode" do
+    thermostat = Thermostat.instance
+    if params[:method] == "on"
+      thermostat.power_save_on
+    else
+      thermostat.power_save_off
     end
     { status: 200 }.to_json
   end
