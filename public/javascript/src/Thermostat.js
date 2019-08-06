@@ -2,11 +2,10 @@
 
 function Thermostat() {
   this._MINIMUM_TEMPERATURE = 10;
+  this._MEDIUM_ENERGY_USAGE_LIMIT = 18;
+  this._DEFAULT_TEMPERATURE = 20;
   this._MAX_LIMIT_PSM_ON = 25;
   this._MAX_LIMIT_PSM_OFF = 32;
-  this._DEFAULT_TEMPERATURE = 20;
-  this._TEMPERATURE_CHANGE = 1;
-  this._MEDIUM_ENERGY_USAGE_LIMIT = 18;
   this._powerSavingMode = true;
 }
 
