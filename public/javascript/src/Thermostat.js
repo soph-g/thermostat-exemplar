@@ -7,57 +7,51 @@ function Thermostat() {
   this._DEFAULT_TEMPERATURE = 20;
   this._TEMPERATURE_CHANGE = 1;
   this._MEDIUM_ENERGY_USAGE_LIMIT = 18;
-  this._temperature = this._DEFAULT_TEMPERATURE;
   this._powerSavingMode = true;
 }
 
 Thermostat.prototype = {
-  getCurrentTemperature: function() {
-    return this._temperature;
+  getCurrentTemperature: function(callback) {
+    $.get('/temperature', function(res) {
+      var data = JSON.parse(res)
+      callback(data);
+    });
   },
-  up: function() {
-    if (this._isMaximumTemperature()) {
-      return;
-    }
-    this._temperature += this._TEMPERATURE_CHANGE;
+  up: function(currentTemperature, callback) {
+    if (this._isMaximumTemperature(currentTemperature)) return;
+    this._updateTemperature(currentTemperature + 1, callback);
   },
-  down: function() {
-    if (this._isMinimumTemperature()) {
-      return;
-    }
-    this._temperature -= this._TEMPERATURE_CHANGE;
-  },
-  isPowerSavingModeOn: function() {
-    return this._powerSavingMode;
+  down: function(currentTemperature, callback) {
+    if (this._isMinimumTemperature(currentTemperature)) return;
+    this._updateTemperature(currentTemperature - 1, callback);
   },
   switchPowerSavingModeOff: function() {
     this._powerSavingMode = false;
   },
-  switchPowerSavingModeOn: function() {
+  switchPowerSavingModeOn: function(temperature, callback) {
     this._powerSavingMode = true;
-    if (this._temperature > this._MAX_LIMIT_PSM_ON) {
-      this._temperature = this._MAX_LIMIT_PSM_ON;
+    if (temperature > this._MAX_LIMIT_PSM_ON) {
+      this._updateTemperature(this._MAX_LIMIT_PSM_ON, callback);
     }
   },
-  resetTemperature: function() {
-    this._temperature = this._DEFAULT_TEMPERATURE;
+  resetTemperature: function(callback) {
+    this._updateTemperature(this._DEFAULT_TEMPERATURE, callback);
   },
-  energyUsage: function() {
-    if (this._temperature < this._MEDIUM_ENERGY_USAGE_LIMIT) {
-      return 'low-usage';
-    }
-    if (this._temperature < this._MAX_LIMIT_PSM_ON) {
-      return 'medium-usage';
-    }
+  energyUsage: function(temperature) {
+    if (temperature < this._MEDIUM_ENERGY_USAGE_LIMIT) return 'low-usage';
+    if (temperature < this._MAX_LIMIT_PSM_ON) return 'medium-usage';
     return 'high-usage';
   },
-  _isMinimumTemperature: function() {
-    return this._temperature == this._MINIMUM_TEMPERATURE;
+  _updateTemperature: function(value, callback){
+    $.post('/temperature', { temperature: value }, callback)
   },
-  _isMaximumTemperature: function() {
-    if (this.isPowerSavingModeOn()) {
-      return this._temperature == this._MAX_LIMIT_PSM_ON;
+  _isMinimumTemperature: function(temperature) {
+    return temperature == this._MINIMUM_TEMPERATURE;
+  },
+  _isMaximumTemperature: function(temperature) {
+    if (this._powerSavingMode) {
+      return temperature == this._MAX_LIMIT_PSM_ON;
     }
-    return this._temperature == this._MAX_LIMIT_PSM_OFF
+    return temperature == this._MAX_LIMIT_PSM_OFF
   }
 };

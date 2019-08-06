@@ -17,7 +17,7 @@ require 'capybara/rspec'
 require_relative '../app'
 
 
-Capybara.app = Thermostat
+Capybara.app = ThermostatApp
 Capybara.server = :puma, { Silent: true }
 Capybara.default_driver = :selenium
 

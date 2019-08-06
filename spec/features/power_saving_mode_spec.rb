@@ -1,6 +1,7 @@
 feature 'power saving mode' do
   before do
     visit('/')
+    page.find('#temperature-reset').click
   end
 
   it 'is on by default' do

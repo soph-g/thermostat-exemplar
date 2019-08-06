@@ -5,35 +5,35 @@ $(document).ready(function() {
 
   updateTemperature();
 
-  $('#temperature-up').on('click', function() {
-    thermostat.up();
-    updateTemperature();
+  $('#temperature-up').on('click', function(data) {
+    var currentTemperature = parseInt($('#temperature').text())
+    thermostat.up(currentTemperature, updateTemperature);
   });
 
   $('#temperature-down').on('click', function() {
-    thermostat.down();
-    updateTemperature();
+    var currentTemperature = parseInt($('#temperature').text())
+    thermostat.down(currentTemperature, updateTemperature);
   });
 
   $('#temperature-reset').on('click', function() {
-    thermostat.resetTemperature();
-    updateTemperature();
+    thermostat.resetTemperature(updateTemperature);
   });
 
   $('#power-saving-on').on('click', function() {
-    thermostat.switchPowerSavingModeOn();
+    var currentTemperature = parseInt($('#temperature').text())
+    thermostat.switchPowerSavingModeOn(currentTemperature, updateTemperature);
     $('#power-saving-status').text('on');
-    updateTemperature();
   });
 
   $('#power-saving-off').on('click', function() {
     thermostat.switchPowerSavingModeOff();
     $('#power-saving-status').text('off');
-    updateTemperature();
   })
 
   function updateTemperature() {
-    $('#temperature').text(thermostat.getCurrentTemperature());
-    $('#temperature').attr('class', thermostat.energyUsage());
+    thermostat.getCurrentTemperature(function(data) {
+      $('#temperature').text(data.temperature);
+      $('#temperature').attr('class', thermostat.energyUsage(data.temperature));
+    });
   }
 });

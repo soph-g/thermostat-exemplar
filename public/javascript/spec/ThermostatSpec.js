@@ -4,80 +4,90 @@ describe('Thermostat', function() {
   var thermostat;
 
   beforeEach(function() {
+    jasmine.Ajax.install();
     thermostat = new Thermostat();
   });
 
+  afterEach(function() {
+    jasmine.Ajax.uninstall();
+  });
+
   describe('#getCurrentTemperature', function() {
-    it('is 20 degrees by default', function() {
-      expect(thermostat.getCurrentTemperature()).toEqual(20);
+    it('retrieves the temperature', function() {
+      thermostat.getCurrentTemperature();
+      expect(jasmine.Ajax.requests.mostRecent().url).toBe('/temperature');
     });
   });
 
   describe('#up', function() {
-    it('increments the temperature', function() {
-      thermostat.up();
-      expect(thermostat.getCurrentTemperature()).toEqual(21);
+    it('sends an increased temperature', function() {
+      thermostat.up(20);
+      expect(jasmine.Ajax.requests.mostRecent().url).toBe('/temperature');
+      expect(jasmine.Ajax.requests.mostRecent().params).toBe("temperature=21");
     });
     describe('power saving mode is on', function() {
       it('has an upper limit of 25 degrees', function() {
-        for (var i = 0; i < 8; i++) {
-          thermostat.up();
+        var i;
+        for (i = 20; i < 26; i++) {
+          thermostat.up(i);
         }
-        expect(thermostat.getCurrentTemperature()).toEqual(25);
+        expect(jasmine.Ajax.requests.mostRecent().url).toBe('/temperature');
+        expect(jasmine.Ajax.requests.mostRecent().params).toBe("temperature=25");
       });
     });
     describe('power saving mode is off', function() {
       it('has an upper limit of 32 degrees', function() {
         thermostat.switchPowerSavingModeOff();
-        for (var i = 0; i < 15; i++) {
-          thermostat.up();
+        var i;
+        for (i = 20; i < 33; i++) {
+          thermostat.up(i);
         }
-        expect(thermostat.getCurrentTemperature()).toEqual(32);
+        expect(jasmine.Ajax.requests.mostRecent().url).toBe('/temperature');
+        expect(jasmine.Ajax.requests.mostRecent().params).toBe("temperature=32");
       });
     });
   });
 
   describe('#down', function() {
-    it('decrements the temperature', function() {
-      thermostat.down();
-      expect(thermostat.getCurrentTemperature()).toEqual(19);
+    it('sends a decreased temperature', function() {
+      thermostat.down(20);
+      expect(jasmine.Ajax.requests.mostRecent().url).toBe('/temperature');
+      expect(jasmine.Ajax.requests.mostRecent().params).toBe("temperature=19");
     });
 
     it('has a minimum temperature of 10 degrees', function() {
-      for (var i = 0; i < 12; i++) {
-        thermostat.down();
+      var i;
+      for (i = 20; i > 9; i--) {
+        thermostat.down(i);
       }
-      expect(thermostat.getCurrentTemperature()).toEqual(10);
+      expect(jasmine.Ajax.requests.mostRecent().url).toBe('/temperature');
+      expect(jasmine.Ajax.requests.mostRecent().params).toBe("temperature=10");
     });
   });
 
-  describe('#isPowerSavingModeOn', function() {
-    it('is on by default', function() {
-      expect(thermostat.isPowerSavingModeOn()).toBe(true);
-    });
-  });
 
   describe('#switchPowerSavingModeOff', function() {
     it('switches power saving mode off', function() {
       thermostat.switchPowerSavingModeOff();
-      expect(thermostat.isPowerSavingModeOn()).toBe(false);
     });
   });
 
   describe('#switchPowerSavingModeOn', function() {
-    it('switches power saving mode on', function() {
+    it('switches power saving mode on preventing temperature increase above max', function() {
       thermostat.switchPowerSavingModeOff();
-      thermostat.switchPowerSavingModeOn();
-      expect(thermostat.isPowerSavingModeOn()).toBe(true);
+      thermostat.switchPowerSavingModeOn(25);
+      thermostat.up(25)
+      expect(jasmine.Ajax.requests.count()).toBe(0);
+      thermostat.down(25)
+      expect(jasmine.Ajax.requests.mostRecent().url).toBe('/temperature');
+      expect(jasmine.Ajax.requests.mostRecent().params).toBe("temperature=24");
     });
 
     it('resets the temperature to the PSM On Max', function() {
       thermostat.switchPowerSavingModeOff();
-      for (var i = 0; i < 10; i++) {
-        thermostat.up();
-      }
-      thermostat.switchPowerSavingModeOn();
-      expect(thermostat.getCurrentTemperature()).toEqual(25)
+      thermostat.switchPowerSavingModeOn(28);
+      expect(jasmine.Ajax.requests.mostRecent().url).toBe('/temperature');
+      expect(jasmine.Ajax.requests.mostRecent().params).toBe("temperature=25");
     })
   });
 
@@ -87,30 +97,25 @@ describe('Thermostat', function() {
       thermostat.up();
       thermostat.up();
       thermostat.resetTemperature();
-      expect(thermostat.getCurrentTemperature()).toEqual(20);
+      expect(jasmine.Ajax.requests.mostRecent().url).toBe('/temperature');
+      expect(jasmine.Ajax.requests.mostRecent().params).toBe("temperature=20");
     });
   });
 
   describe('#energyUsage', function() {
     describe('when the temperature is below 18 degrees', function() {
       it('is considered low-usage', function() {
-        for (var i = 0; i < 3; i++) {
-          thermostat.down();
-        }
-        expect(thermostat.energyUsage()).toEqual('low-usage')
+        expect(thermostat.energyUsage(17)).toEqual('low-usage')
       });
     });
     describe('when the temperature is below 25 degrees', function() {
       it('is considered medium-usage', function() {
-        expect(thermostat.energyUsage()).toEqual('medium-usage')
+        expect(thermostat.energyUsage(20)).toEqual('medium-usage')
       });
     });
     describe('when the temperature is above 25 degrees', function() {
       it('is considered high-usage', function() {
-        for (var i = 0; i < 6; i++) {
-          thermostat.up();
-        }
-        expect(thermostat.energyUsage()).toEqual('high-usage')
+        expect(thermostat.energyUsage(26)).toEqual('high-usage')
       });
     });
   });

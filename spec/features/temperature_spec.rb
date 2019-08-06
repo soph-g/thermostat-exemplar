@@ -1,6 +1,7 @@
 feature 'viewing the temperature' do
   before do
     visit('/')
+    page.find('#temperature-reset').click
   end
   it 'is 20 by default' do
     expect(page.find('#temperature')).to have_content '20'
